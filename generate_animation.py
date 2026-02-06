@@ -5,6 +5,7 @@ The animation shows enemies (contribution days) that get shot down by a player s
 """
 
 import os
+import random
 import requests
 import json
 from datetime import datetime, timedelta
@@ -100,7 +101,6 @@ def generate_space_shooter_svg(contributions_data, output_file='space-shooter.sv
 '''
     
     # Add stars
-    import random
     random.seed(42)
     for _ in range(50):
         star_x = random.randint(0, width)
@@ -119,7 +119,10 @@ def generate_space_shooter_svg(contributions_data, output_file='space-shooter.sv
     <circle class="enemy" cx="{enemy['x']}" cy="{enemy['y']}" r="{enemy['size']}" fill="{enemy['color']}" opacity="0.8">
       <animate attributeName="cy" from="{enemy['y']}" to="{enemy['y'] + 200}" dur="3s" begin="{animation_delay}s" repeatCount="indefinite"/>
     </circle>
-    <text x="{enemy['x']}" y="{enemy['y'] + 5}" fill="#ffffff" font-size="10" text-anchor="middle" font-family="monospace">{enemy['count']}</text>
+    <text x="{enemy['x']}" y="{enemy['y'] + 5}" fill="#ffffff" font-size="10" text-anchor="middle" font-family="monospace">
+      {enemy['count']}
+      <animate attributeName="y" from="{enemy['y'] + 5}" to="{enemy['y'] + 205}" dur="3s" begin="{animation_delay}s" repeatCount="indefinite"/>
+    </text>
   </g>
 '''
     
@@ -176,7 +179,9 @@ def main():
     if github_repository:
         username = github_repository.split('/')[0]
     else:
-        username = 'vishalssh'  # Fallback
+        # Fallback to repository owner if running locally
+        # This is specific to the vishalssh/vishalssh repository
+        username = os.environ.get('GITHUB_USER', 'vishalssh')
     
     token = os.environ.get('GITHUB_TOKEN')
     
